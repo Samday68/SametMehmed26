@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WITH RESPECT TO MEHMED GRESIYENKO 2025</title>
+  <style>
+    body { font-family: sans-serif; background:#fff; color:#000; display:flex; flex-direction:column; align-items:center; padding:10px; margin:0; }
+    h2 { text-align:center; font-size:18px; margin:8px 0; }
+
+    #graphToggle { height:28px; font-size:13px; font-weight:bold; padding:0 14px; cursor:pointer; }
+
+    #xzRow { display:flex; align-items:center; justify-content:center; gap:6px; margin:5px 0; }
+    .flag { width:80px; height:80px; display:flex; align-items:center; justify-content:center; font-size:64px; line-height:1; }
+
+    #pairs { display:flex; flex-wrap:nowrap; overflow-x:auto; margin:8px 0; width:100%; max-width:420px; }
+    .pair-btn { padding:8px 12px; margin:4px; border:none; border-radius:6px; background:#eee; cursor:pointer; font-size:14px; flex:0 0 auto; }
+    .pair-btn.active { background:#333; color:#fff; }
+
+    #chart { width:100%; max-width:400px; max-height:300px; }
+
+    #topbar { width:100%; max-width:420px; display:flex; justify-content:space-between; gap:6px; }
+    #time, #price { font-size:12px; font-weight:bold; padding:4px 8px; border-radius:4px; min-width:80px; text-align:center; }
+    #time { background:#000; color:#fff; margin-right:auto; }
+    #price { background:#999; color:#fff; margin-left:auto; }
+
+    #xzRowWrap { width:100%; max-width:420px; position:relative; margin-top:1px; }
+    #numbersTop { display:flex; flex-wrap:nowrap; justify-content:center; overflow-x:auto; width:100%; position:relative; padding:4px 0; }
+    .num-box { flex:0 0 22px; height:22px; display:flex; justify-content:center; align-items:center; margin:1px; color:#fff; font-size:12px; border-radius:4px; }
+    .worm-line { position:absolute; height:3px; border-top:3px solid; z-index:5; }
+
+    #analysisBoxes { width:100%; max-width:420px; border-top:2px solid #000; margin-top:2px; position:relative; }
+    .row { position:relative; display:flex; align-items:center; justify-content:flex-start; height:26px; border-bottom:2px solid #000; font-size:11px; font-weight:700; padding-left:6px; }
+    .normalBlue   { color:#0b57d0; }
+    .abnormalBlue { color:#0b57d0; background:#cce0ff; }
+    .abnormalRed  { color:#d93025; background:#ffd6d6; }
+    .normalRed    { color:#d93025; }
+
+    #verticalLine { position:absolute; top:0; bottom:0; width:2px; background:#000; }
+
+    .calc-box { position:absolute; width:22px; height:22px; border-radius:4px; color:#fff; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; top:2px; }
+  </style>
+</head>
+<body>
+  <h2>WITH RESPECT TO MEHMED GRESIYENKO 2025</h2>
+
+  <div id="xzRow">
+    <span class="flag">🇹🇷</span>
+    <span class="flag">🇵🇸</span>
+    <button id="graphToggle" onclick="toggleGraph()">XZ</button>
+    <span class="flag">🇮🇩</span>
+    <span class="flag">🇵🇸</span>
+  </div>
+
+  <div id="pairs">
+    <button class="pair-btn active" onclick="selectPair(this, 'R_100')">Volatility 100</button>
+    <button class="pair-btn" onclick="selectPair(this, 'R_75')">Volatility 75</button>
+    <button class="pair-btn" onclick="selectPair(this, 'R_50')">Volatility 50</button>
+    <button class="pair-btn" onclick="selectPair(this, 'R_25')">Volatility 25</button>
+    <button class="pair-btn" onclick="selectPair(this, 'R_10')">Volatility 10</button>
+  </div>
+
+  <div id="topbar">
+    <div id="time">GMT 00:00:00</div>
+    <div id="price">0,00</div>
+  </div>
+
+  <div id="chartContainer" style="position:relative; width:100%; max-width:400px;">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <div id="xzRowWrap">
+    <div id="numbersTop"></div>
+  </div>
+
+  <div id="analysisBoxes">
+    <div class="row normalBlue"   id="rowNB">NORMAL</div>
+    <div class="row abnormalBlue" id="rowAB">ABNORMAL</div>
+    <div class="row abnormalRed"  id="rowAR">ABNORMAL</div>
+    <div class="row normalRed"    id="rowNR">NORMAL</div>
+    <div id="verticalLine"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    let ws;
+    let prices=[], digits=[], decimalDigits=[], combinedDigits=[];
+    let wormLinesTop=[];
+    let numColors=[];
+    let currentPair='R_100', currentGraph='XZ';
+
+    function toggleGraph(){
+      if(currentGraph==='XZ') currentGraph='ZZ';
+      else if(currentGraph==='ZZ') currentGraph='Z.Z';
+      else currentGraph='XZ';
+      document.getElementById('graphToggle').innerText=currentGraph;
+      chart.update();
+    }
+
+    const ctx=document.getElementById('chart').getContext('2d');
+    const chart=new Chart(ctx,{
+      type:'line',
+      data:{labels:Array.from({length:20},(_,i)=>(i+1).toString()),datasets:[{
+        data:Array(20).fill(null),borderColor:'black',
+        backgroundColor:'rgba(0,0,0,0.05)',
+        pointBackgroundColor:Array(20).fill('black'),
+        pointRadius:8,pointHoverRadius:10
+      }]},
+      options:{plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{y:{beginAtZero:false}},animation:false},
+      plugins:[{afterDatasetsDraw(chart){
+        const {ctx}=chart;
+        const meta=chart.getDatasetMeta(0);
+        ctx.font='bold 12px sans-serif';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        meta.data.forEach((pt,i)=>{
+          let t='';
+          if(currentGraph==='XZ') t=decimalDigits[i]||'';
+          else if(currentGraph==='ZZ') t=digits[i]||'';
+          else t=combinedDigits[i]||'';
+          ctx.fillStyle='#fff';
+          if(pt && pt.x!==undefined) ctx.fillText(t,pt.x,pt.y);
+        });
+      }}]
+    });
+
+    function selectPair(el,pair){
+      currentPair=pair;
+      document.querySelectorAll('.pair-btn').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      if(ws) ws.close();
+      prices=[];digits=[];decimalDigits=[];combinedDigits=[];wormLinesTop=[];numColors=[];
+      document.getElementById('numbersTop').innerHTML='';
+      ['rowNB','rowAB','rowAR','rowNR'].forEach(id=>{
+        document.getElementById(id).querySelectorAll('.calc-box').forEach(e=>e.remove());
+      });
+      startWS();
+    }
+
+    function updateWorm(){
+      if(prices.length<20) return;
+      const last20=prices.slice(-20);
+      const max=Math.max(...last20.slice(0,-1));
+      const min=Math.min(...last20.slice(0,-1));
+      const last=last20[last20.length-1];
+      let color='lightgreen';
+      if(last>max) color='blue';
+      else if(last<min) color='red';
+      wormLinesTop.push(color);
+      if(wormLinesTop.length>20) wormLinesTop.shift();
+    }
+
+    function renderWormLines(containerId,wormArray){
+      const c=document.getElementById(containerId);
+      c.querySelectorAll('.worm-line').forEach(e=>e.remove());
+      const boxes=c.querySelectorAll('.num-box');
+      boxes.forEach((box,idx)=>{
+        if(!wormArray[idx]) return;
+        const line=document.createElement('div');
+        line.className='worm-line';
+        line.style.width=box.offsetWidth+'px';
+        line.style.left=box.offsetLeft+'px';
+        line.style.top=(box.offsetTop+box.offsetHeight+0.2)+'px';
+        line.style.borderTopColor=wormArray[idx];
+        c.appendChild(line);
+      });
+    }
+
+    function placeVerticalLine(){
+      const row=document.getElementById('numbersTop');
+      const vLine=document.getElementById('verticalLine');
+      const boxes=row.querySelectorAll('.num-box');
+      if(boxes.length<8) return;
+      const b8=boxes[boxes.length-8];
+      const b7=boxes[boxes.length-7];
+      const r8=b8.getBoundingClientRect();
+      const r7=b7.getBoundingClientRect();
+      const rA=document.getElementById('analysisBoxes').getBoundingClientRect();
+      const midViewportX = (r8.right + r7.left) / 2;
+      const leftInside = midViewportX - rA.left;
+      vLine.style.left = leftInside + 'px';
+    }
+
+    function renderCalcBubbles(){
+      ['rowNB','rowAB','rowAR','rowNR'].forEach(id=>{
+        document.getElementById(id).querySelectorAll('.calc-box').forEach(e=>e.remove());
+      });
+      const topRow=document.getElementById('numbersTop');
+      const boxes=topRow.querySelectorAll('.num-box');
+      if(boxes.length<2) return;
+
+      const N = boxes.length - 1;
+      const start = Math.max(0, N - 12); // 12 hesaplama kutusu
+      for(let i=start;i<N;i++){
+        let a = parseInt(boxes[i].innerText);
+        let b = parseInt(boxes[i+1].innerText);
+
+        let aVal = a;
+        let bVal = b;
+
+        // kural: 6-9 → 0 ise 10 say
+        if(a >= 6 && a <= 9 && b === 0){
+          bVal = 10;
+        }
+        if(a === 0 && b >= 6 && b <= 9){
+          aVal = 10;
+        }
+
+        const diff = Math.abs(bVal - aVal);
+
+        let c2 = numColors[i+1] || 'red';
+        if(c2 === '#666') c2 = numColors[i] || 'red';
+        const isBlue = (c2 === 'blue');
+
+        let rowId;
+        if(bVal < aVal){
+          rowId = isBlue ? 'rowAB' : 'rowAR';
+        }else{
+          rowId = isBlue ? 'rowNB' : 'rowNR';
+        }
+        const rowEl = document.getElementById(rowId);
+
+        const rPrev = boxes[i].getBoundingClientRect();
+        const rNext = boxes[i+1].getBoundingClientRect();
+        const rRow  = rowEl.getBoundingClientRect();
+        const midX  = (rPrev.right + rNext.left)/2;
+        const leftInside = midX - rRow.left - 11;
+
+        const bubble = document.createElement('div');
+        bubble.className = 'calc-box';
+        bubble.style.left = leftInside + 'px';
+        bubble.style.background = isBlue ? 'blue' : 'red';
+        bubble.textContent = diff;
+        rowEl.appendChild(bubble);
+      }
+    }
+
+    function startWS(){
+      ws=new WebSocket('wss://ws.binaryws.com/websockets/v3?app_id=1089');
+      ws.onopen=()=>ws.send(JSON.stringify({ticks:currentPair,subscribe:1}));
+      ws.onmessage=(msg)=>{
+        const d=JSON.parse(msg.data); if(!d.tick) return;
+        const price=parseFloat(d.tick.quote);
+        prices.push(price); if(prices.length>20) prices.shift();
+
+        const lastTwo=Math.floor(price).toString().slice(-2);
+        digits.push(lastTwo); if(digits.length>20) digits.shift();
+
+        const priceStr=d.tick.quote.toString();
+        const dec=(priceStr.split('.')[1]||'0');
+        decimalDigits.push(dec.slice(-1)); if(decimalDigits.length>20) decimalDigits.shift();
+
+        const lastInt=Math.floor(price).toString().slice(-1);
+        const firstDec=dec.charAt(0)||'0';
+        const comb=lastInt+','+firstDec;
+        combinedDigits.push(comb); if(combinedDigits.length>20) combinedDigits.shift();
+
+        let priceColor='#999';
+        if(prices.length>1){
+          priceColor=price>prices[prices.length-2]?'green':price<prices[prices.length-2]?'red':'#999';
+        }
+        const priceBox=document.getElementById('price');
+        priceBox.style.background=priceColor;
+        priceBox.innerText=price.toLocaleString('de-DE');
+
+        const row=document.getElementById('numbersTop');
+        row.innerHTML='';
+        numColors=[];
+        for(let i=0;i<decimalDigits.length;i++){
+          const up=i>0&&prices[i]>prices[i-1];
+          const down=i>0&&prices[i]<prices[i-1];
+          const color=up?'blue':down?'red':'#666';
+          numColors[i]=color;
+          const box=document.createElement('div');
+          box.className='num-box';
+          box.style.background=color;
+          box.innerText=decimalDigits[i]||'0';
+          row.appendChild(box);
+        }
+        row.scrollLeft=row.scrollWidth;
+
+        chart.data.datasets[0].data=prices;
+        chart.data.datasets[0].pointBackgroundColor=prices.map((p,i)=>i>0&&p>prices[i-1]?'blue':i>0&&p<prices[i-1]?'red':'gray');
+        chart.data.labels=Array.from({length:prices.length},(_,i)=>(i+1).toString());
+        chart.update();
+
+        updateWorm();
+        setTimeout(()=>{
+          renderWormLines('numbersTop',wormLinesTop);
+          renderCalcBubbles();
+          placeVerticalLine();
+        },40);
+      };
+    }
+
+    function updateTime(){
+      const now=new Date();
+      const hh=now.getUTCHours().toString().padStart(2,'0');
+      const mm=now.getUTCMinutes().toString().padStart(2,'0');
+      const ss=now.getUTCSeconds().toString().padStart(2,'0');
+      document.getElementById('time').innerText=`GMT ${hh}:${mm}:${ss}`;
+    }
+    setInterval(updateTime,1000);
+    updateTime();
+    startWS();
+  </script>
+</body>
+</html>
